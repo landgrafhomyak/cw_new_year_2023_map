@@ -1,0 +1,12 @@
+/.idea/
+/.gradle/
+/out/
+*.sqlite
+*.class
+/build/
+
+# no CI
+/gradle/
+/gradlew
+/gradlew.bat
+
