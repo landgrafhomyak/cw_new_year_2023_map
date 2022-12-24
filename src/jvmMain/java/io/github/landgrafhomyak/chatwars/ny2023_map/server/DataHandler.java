@@ -4,6 +4,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import io.github.landgrafhomyak.chatwars.ny2023_map.db.Database;
+import io.github.landgrafhomyak.chatwars.ny2023_map.db.SquareCacheDatabase;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,9 +12,9 @@ import java.util.Objects;
 
 final class DataHandler implements HttpHandler {
     public final String path;
-    private final SquareCacheDatabase db;
+    private final SerializedSynchronizedCachedDatabase db;
 
-    DataHandler(String path, SquareCacheDatabase db) {
+    DataHandler(String path, SerializedSynchronizedCachedDatabase db) {
         this.path = path;
         this.db = db;
     }

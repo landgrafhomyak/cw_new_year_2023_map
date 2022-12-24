@@ -1,17 +1,14 @@
 package io.github.landgrafhomyak.chatwars.ny2023_map.server;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import io.github.landgrafhomyak.chatwars.ny2023_map.db.Database;
 import io.github.landgrafhomyak.chatwars.ny2023_map.db.DatabaseException;
+import io.github.landgrafhomyak.chatwars.ny2023_map.db.SquareCacheDatabase;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.util.Objects;
 
 /**
  * HTTP сервер для отображения карты.
@@ -49,14 +46,14 @@ public final class SiteServer {
 
     @SuppressWarnings("FieldCanBeLocal")
     private final HttpServer server;
-    private final SquareCacheDatabase db;
+    private final SerializedSynchronizedCachedDatabase db;
 
     public SiteServer(final Database db) throws IOException, DatabaseException {
         this.server = HttpServer.create(new InetSocketAddress(80), 0);
         this.server.createContext(LOADER_JS_HANDLER.path, LOADER_JS_HANDLER);
         this.server.createContext(INDEX_CSS_HANDLER.path, INDEX_CSS_HANDLER);
         final String apiPath = "/data";
-        this.db = new SquareCacheDatabase(db);
+        this.db = new SerializedSynchronizedCachedDatabase(db);
         this.server.createContext(apiPath, new DataHandler(apiPath, this.db));
         this.server.start();
         this.server.createContext(INDEX_HTML_HANDLER.path, INDEX_HTML_HANDLER);
