@@ -38,13 +38,14 @@ public final class SiteServer {
     }
 
     private static final byte[] LOADER_JS = loadResource("/loader.js");
+    private static final byte[] LOADER_JS_MAP = loadResource("/loader.js.map");
     private static final byte[] INDEX_CSS = loadResource("/index.css");
     private static final byte[] INDEX_HTML = loadResource("/index.html");
 
 
-    private static final StaticHandler LOADER_JS_HANDLER = new StaticHandler("/loader.js", LOADER_JS, "application/javascript");
+    private static final JsHandler LOADER_JS_HANDLER = new JsHandler("/loader.js", LOADER_JS, LOADER_JS_MAP);
     private static final StaticHandler INDEX_CSS_HANDLER = new StaticHandler("/index.css", INDEX_CSS, "text/css");
-    private static final RootHandler INDEX_HTML_HANDLER = new RootHandler(INDEX_HTML, "text/html");
+    private static final StaticHandler INDEX_HTML_HANDLER = new StaticHandler("/", INDEX_HTML, "text/html");
 
     @SuppressWarnings("FieldCanBeLocal")
     private final HttpServer server;
@@ -54,11 +55,11 @@ public final class SiteServer {
         this.server = HttpServer.create(new InetSocketAddress(80), 0);
         this.server.createContext(LOADER_JS_HANDLER.path, LOADER_JS_HANDLER);
         this.server.createContext(INDEX_CSS_HANDLER.path, INDEX_CSS_HANDLER);
-        this.server.createContext(RootHandler.path(), INDEX_HTML_HANDLER);
         final String apiPath = "/data";
         this.db = new SquareCacheDatabase(db);
         this.server.createContext(apiPath, new DataHandler(apiPath, this.db));
         this.server.start();
+        this.server.createContext(INDEX_HTML_HANDLER.path, INDEX_HTML_HANDLER);
     }
 
     public Database database() {

@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "io.github.landgrafhomyak.chatwars"
-version = "1.0"
+version = "1.1"
 
 repositories {
     mavenCentral()
@@ -61,7 +61,7 @@ kotlin {
         browser {
             commonWebpackConfig {
                 outputFileName = "loader.js"
-                outputPath = sourceSets["jvmMain"].resources.srcDirs.first()
+                outputPath = rootDir.resolve("src/jvmMain/resources")
             }
         }
     }

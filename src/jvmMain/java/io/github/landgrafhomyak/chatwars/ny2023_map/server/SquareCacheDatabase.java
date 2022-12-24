@@ -34,6 +34,7 @@ final class SquareCacheDatabase implements Database {
     /**
      * Кешированный объект с границами кешированной карты.
      */
+    @SuppressWarnings("UnusedAssignment")
     private Rect rect = new Rect(0, 0, 0, 0);
     /**
      * Кешированное байтовое представление {@link #cache}.
@@ -51,7 +52,8 @@ final class SquareCacheDatabase implements Database {
         if (borders.absMinY() > this.radius) this.radius = borders.absMinY();
         if (borders.absMaxY() > this.radius) this.radius = borders.absMaxY();
         this.cache = this.uncached.getMap(-this.radius, -this.radius, this.radius * 2 + 1, this.radius * 2 + 1);
-
+        this.rect = new Database.Rect(-this.radius, this.radius, -this.radius, this.radius);
+        this.serialize();
     }
 
     /**
@@ -77,7 +79,7 @@ final class SquareCacheDatabase implements Database {
         }
         this.cache = newCache;
         this.radius = newRadius;
-        this.rect = new Database.Rect(newRadius, newRadius, newRadius, newRadius);
+        this.rect = new Database.Rect(-newRadius, newRadius, -newRadius, newRadius);
     }
 
     @Override

@@ -21,8 +21,7 @@ final class StaticHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         if (!Objects.equals(exchange.getRequestURI().getPath(), this.path)) {
-            exchange.getResponseHeaders().add("Location", this.path);
-            exchange.sendResponseHeaders(301, 0);
+            exchange.sendResponseHeaders(404, 0);
             return;
         }
         exchange.getResponseHeaders().add("Content-Type", this.contentType);
