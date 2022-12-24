@@ -1,5 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
-
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform") version "1.7.0"
@@ -14,11 +14,9 @@ repositories {
     mavenCentral()
 }
 
-
-
-//tasks.withType<KotlinCompile> {
-//    kotlinOptions.jvmTarget = "17"
-//}
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "11"
+}
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
