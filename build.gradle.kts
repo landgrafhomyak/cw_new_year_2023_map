@@ -57,7 +57,6 @@ kotlin {
     }
 
     js(IR) {
-
         binaries.executable()
         browser {
             commonWebpackConfig {
@@ -77,6 +76,10 @@ kotlin {
         }
         val commonTest by getting
         val jvmMain by getting {
+//            java.sourceSets.getByName("main").java.apply {
+//                srcDirs.forEach { d -> kotlin.srcDir(d)}
+//                setSrcDirs(emptyList<Any>());
+//            }
             dependsOn(commonMain)
         }
         val jsMain by getting {
@@ -84,4 +87,3 @@ kotlin {
         }
     }
 }
-

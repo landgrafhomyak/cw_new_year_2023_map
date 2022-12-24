@@ -4,6 +4,8 @@
 *.sqlite
 *.class
 /build/
+/.run/
+/kotlin-js-store/
 
 # no CI
 /gradle/
