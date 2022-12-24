@@ -57,7 +57,13 @@ kotlin {
     }
 
     js(IR) {
+
+        binaries.executable()
         browser {
+            commonWebpackConfig {
+                outputFileName = "loader.js"
+                outputPath = sourceSets["jvmMain"].resources.srcDirs.first()
+            }
         }
     }
 
