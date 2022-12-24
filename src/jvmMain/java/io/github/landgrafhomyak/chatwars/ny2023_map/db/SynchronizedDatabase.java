@@ -1,5 +1,7 @@
-package io.github.landgrafhomyak.chatwars.ny2023_map;
+package io.github.landgrafhomyak.chatwars.ny2023_map.db;
 
+
+import io.github.landgrafhomyak.chatwars.ny2023_map.TileType;
 
 public final class SynchronizedDatabase implements Database {
     private final Database wrapped;

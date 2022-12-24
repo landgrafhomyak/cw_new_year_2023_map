@@ -1,5 +1,6 @@
-package io.github.landgrafhomyak.chatwars.ny2023_map;
+package io.github.landgrafhomyak.chatwars.ny2023_map.db;
 
+import io.github.landgrafhomyak.chatwars.ny2023_map.TileType;
 import org.sqlite.SQLiteConnection;
 
 import java.sql.PreparedStatement;

@@ -1,5 +1,7 @@
 package io.github.landgrafhomyak.chatwars.ny2023_map;
 
+import io.github.landgrafhomyak.chatwars.ny2023_map.db.Database;
+import io.github.landgrafhomyak.chatwars.ny2023_map.db.DatabaseException;
 import org.json.JSONObject;
 
 import java.io.IOException;

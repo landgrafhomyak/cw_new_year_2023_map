@@ -1,5 +1,7 @@
 package io.github.landgrafhomyak.chatwars.ny2023_map;
 
+import io.github.landgrafhomyak.chatwars.ny2023_map.db.DatabaseException;
+import io.github.landgrafhomyak.chatwars.ny2023_map.db.SqliteDatabase;
 import org.sqlite.jdbc4.JDBC4Connection;
 
 import java.io.IOException;

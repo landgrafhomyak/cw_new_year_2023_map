@@ -3,6 +3,8 @@ package io.github.landgrafhomyak.chatwars.ny2023_map;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import io.github.landgrafhomyak.chatwars.ny2023_map.db.Database;
+import io.github.landgrafhomyak.chatwars.ny2023_map.db.DatabaseException;
 
 import java.io.IOException;
 import java.io.OutputStream;
