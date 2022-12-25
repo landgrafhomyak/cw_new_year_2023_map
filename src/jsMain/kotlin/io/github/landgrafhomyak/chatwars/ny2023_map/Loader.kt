@@ -17,49 +17,55 @@ public fun main() {
     val west = xhr.getResponseHeader("West")!!.toInt()
     val sb = StringBuilder()
     val data = (xhr.response as String).map { b -> TileType.fromSerial(b) }
-
     val width = east - west + 1
+    // data[width * -north + -west] = TileType.ZERO
+
 
     var i = data.size - width
+    sb.append("<tr class='coords'><td><div></div></td>")
+    for (x in west..east) {
+        sb.append("<td>${x}</td>")
+    }
+    sb.append("<td><div></div></td></tr>")
     for (y in north downTo south) {
-        sb.append("<tr>")
+        sb.append("<tr><td class='coords'>${y}</td>")
         for (x in west..east) {
             sb.append("<td coords='${x}#${y}' class='")
-            if (data[i] != null) {
-                if (x < 0) {
-                    if (y < 0) {
-                        sb.append("black ")
-                    } else if (y > 0) {
-                        sb.append("red ")
-                    } else {
-                        sb.append("forbidden ")
-                    }
-                } else if (x > 0) {
-                    if (y < 0) {
-                        sb.append("blue ")
-                    } else if (y > 0) {
-                        sb.append("white ")
-                    } else {
-                        sb.append("forbidden ")
-                    }
+            if (x < 0) {
+                if (y < 0) {
+                    sb.append("black ")
+                } else if (y > 0) {
+                    sb.append("red ")
                 } else {
                     sb.append("forbidden ")
                 }
-                sb.append(data[i]!!.cssClass)
-            } else if (x == 0 || y == 0) {
-                sb.append("forbidden-hidden")
+            } else if (x > 0) {
+                if (y < 0) {
+                    sb.append("blue ")
+                } else if (y > 0) {
+                    sb.append("white ")
+                } else {
+                    sb.append("forbidden ")
+                }
+            } else {
+                sb.append("forbidden ")
+                if (y == 0)
+                    sb.append("' id='")
             }
-            if (x == 0 && y == 0)
-                sb.append("' id='zero")
-            sb.append("'>")
             if (data[i] != null) {
-                sb.append("<div></div>")
+                sb.append(data[i]!!.cssClass)
             }
+            sb.append("'>")
             sb.append("</td>")
             i++
         }
         i -= width * 2
-        sb.append("</tr>")
+        sb.append("<td class='coords'>${y}</td></tr>")
     }
+    sb.append("<tr class='coords'><td><div></div></td>")
+    for (x in west..east) {
+        sb.append("<td>${x}</td>")
+    }
+    sb.append("<td><div></div></td></tr>")
     document.write(sb.toString())
 }

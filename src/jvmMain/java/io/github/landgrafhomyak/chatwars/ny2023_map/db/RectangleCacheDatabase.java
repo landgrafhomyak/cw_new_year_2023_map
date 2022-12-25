@@ -59,8 +59,8 @@ public class RectangleCacheDatabase implements Database {
         this.uncached.saveMap(data, startX, startY, width, height);
         this.ensureCapacity(startX, startY, width, height);
         final int cWidth = this.rect.maxX - this.rect.minX + 1;
-        startY += this.rect.minY;
-        startX += this.rect.minX;
+        startY -= this.rect.minY;
+        startX -= this.rect.minX;
         int o = startY * cWidth + startX;
         int i = 0;
         for (int y = 0; y < height; y++, o += cWidth - width) {

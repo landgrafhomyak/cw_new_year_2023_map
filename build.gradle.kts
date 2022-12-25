@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "io.github.landgrafhomyak.chatwars"
-version = "1.1"
+version = "1.2"
 
 repositories {
     mavenCentral()

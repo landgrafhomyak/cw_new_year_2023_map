@@ -64,7 +64,7 @@ div#map {
     right: 0;
     top: 50px;
     overflow: auto;
-    padding: 100px;
+    padding: 0;
 }
 
 div#map > table {
@@ -72,135 +72,99 @@ div#map > table {
     height: max-content;
 }
 
-div#map > table td {
-    border-spacing: 3px;
-    width: 15px;
-    height: 15px;
-    padding: 5px;
+div#map > table tr > td.coords, div#map > table tr.coords, div#map > table tr.coords > td {
+    position: sticky;
 }
 
-div#map > table td[coords]::after {
-    content: attr(coords);
-    pointer-events: none;
-    position: absolute;
-    padding: 5px;
+div#map > table tr.coords > td, div#map > table tr > td.coords {
     background-color: #d4dbe5;
-    margin-top: 20px;
-    display: none;
+    font-size: x-small;
     text-align: center;
-    width: min-content;
+    padding: 0;
+    vertical-align: middle;
 }
 
-div#map > table td[coords]:hover::after {
-    display: block;
+div#map > table tr.coords > td:first-child, div#map > table tr > td.coords:first-child {
+    left: 0;
 }
 
-div#map > table td[coords].forest::after {
-    content: attr(coords) ' \A Forest';
+div#map > table tr.coords > td:last-child, div#map > table tr > td.coords:last-child {
+    right: 0;
 }
 
-div#map > table td[coords].valley::after {
-    content: attr(coords) ' \A Valley';
+div#map > table tr.coords:first-child > td {
+    top: 0;
 }
 
-div#map > table td[coords].fields::after {
-    content: attr(coords) ' \A Fields';
+div#map > table tr.coords:last-child > td {
+    bottom: 0;
 }
 
-div#map > table td[coords].tavern::after {
-    content: attr(coords) ' \A Tavern';
+/*
+div#map > table tr.coords > td:first-child, div#map > table tr.coords > td:last-child {
+    position: relative;
 }
 
-div#map > table td[coords].shop::after {
-    content: attr(coords) ' \A Shop';
-}
-
-div#map > table td[coords].well::after {
-    content: attr(coords) ' \A Well';
-}
-
-div#map > table td[coords].zero::after {
-    content: attr(coords) ' \A Zero';
-}
-
-div#map > table td[coords].blue::after {
-    border: 1px solid #00f;
-    background-color: #aaf;
-}
-
-div#map > table td[coords].red::after {
-    border: 1px solid #f00;
-    background-color: #faa;
-}
-
-div#map > table td[coords].white::after {
-    border: 1px solid #fff;
-    background-color: #eee;
-}
-
-div#map > table td[coords].black::after {
-    border: 1px solid #888;
-    background-color: #aaa;
-}
-
-div#map > table td[coords].forbidden::after, div#map > table td[coords].forbidden-hidden::after {
-    border: 1px solid #f80;
-    background-color: #ff0;
-}
-
-div#map > table td.forbidden {
-    border: 1px solid #ff0;
-}
-
-div#map > table td.forbidden-hidden {
-    border: 1px solid #880;
-}
-
-div#map > table td.black {
-    border: 1px solid #888;
-}
-
-div#map > table td.white {
-    border: 1px solid #fff;
-}
-
-div#map > table td.blue {
-    border: 1px solid #00f;
-}
-
-div#map > table td.red {
-    border: 1px solid #f00;
-}
-
-div#map > table td > div {
+div#map > table tr.coords > td:first-child > div, div#map > table tr.coords > td:last-child > div {
+    position: fixed;
     width: 100%;
     height: 100%;
 }
+*/
 
-div#map > table td.valley > div {
+div#map > table td {
+    border-spacing: 3px;
+    width: 25px;
+    height: 25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+}
+
+div#map > table td.forbidden {
+    background-color: #220;
+}
+
+div#map > table td.black {
+    background-color: #111;
+}
+
+div#map > table td.white {
     background-color: #222;
 }
 
-div#map > table td.forest > div {
-    background-color: #060;
+div#map > table td.blue {
+    background-color: #003;
 }
 
-div#map > table td.fields > div {
-    background-color: #880;
+div#map > table td.red {
+    background-color: #200;
 }
 
-div#map > table td.zero > div {
-    background-color: black;
+div#map > table td.valley {
+    background-image: url("/icons/valley.svg");
 }
 
-div#map > table td.shop > div {
-    background-color: orange;
+div#map > table td.forest {
+    background-image: url("/icons/forest.svg");
 }
 
-div#map > table td.tavern > div {
-    background-color: #a40;
+div#map > table td.fields {
+    background-image: url("/icons/fields.svg");
 }
 
-div#map > table td.well > div {
-    background-color: #f0f;
+div#map > table td#zero {
+    background-image: url("/icons/zero.svg");
+}
+
+div#map > table td.shop {
+    background-image: url("/icons/shop.svg");
+}
+
+div#map > table td.tavern {
+    background-image: url("/icons/tavern.svg");
+}
+
+div#map > table td.well {
+    background-image: url("/icons/well.svg");
 }
