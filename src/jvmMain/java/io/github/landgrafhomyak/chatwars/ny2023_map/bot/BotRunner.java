@@ -1,5 +1,6 @@
-package io.github.landgrafhomyak.chatwars.ny2023_map;
+package io.github.landgrafhomyak.chatwars.ny2023_map.bot;
 
+import io.github.landgrafhomyak.chatwars.ny2023_map.TileType;
 import io.github.landgrafhomyak.chatwars.ny2023_map.db.Database;
 import io.github.landgrafhomyak.chatwars.ny2023_map.db.DatabaseException;
 import org.json.JSONObject;
@@ -10,11 +11,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-final class BotRunner implements Runnable {
+public final class BotRunner implements Runnable {
     private static final long GAME_BOT_UID = 5913926488L;
 
 
@@ -44,7 +44,7 @@ final class BotRunner implements Runnable {
                 );
 
                 offset = -1;
-                for (BotRunner.UpdateMessage update : new BotRunner.UpdatesIterator(updates)) {
+                for (Update7Message update : new Updates7MessageParserIterator(updates)) {
                     if (update.updateId > offset)
                         offset = update.updateId;
                     try {
@@ -71,7 +71,7 @@ final class BotRunner implements Runnable {
         }
     }
 
-    private void procMessage(BotRunner.UpdateMessage msg) throws TgApiException, IOException, InterruptedException {
+    private void procMessage(Update7Message msg) throws TgApiException, IOException, InterruptedException {
         if (msg.rawText == null) {
             if (msg.verbose)
                 this.reply(msg.chatId, msg.messageId, "\u274CMap must be a text");
@@ -143,9 +143,8 @@ final class BotRunner implements Runnable {
             "\uD83D\uDCCD: (-?\\d+)#(-?\\d+) – you are here\\.\n\\S+ Castle lands\\.\n(?:\\S+ \\wegion x\\d+ points bonus\n)?Region details /region\n\n(\\|[\\s\\S]+\\|)(?:\n\nExtended map: /map_\\d)?$"
     );
     private static final Pattern profilePattern = Pattern.compile(
-            "Global Battle #4 in [^\n]*?!\n\n\\S+ \\S+ of \\S+ Castle\n\uD83C\uDFC5Level: [\\s\\S]+\nPosition: (-?\\d+)#(-?\\d+)\n(.+)\n[\\s\\S]*$"
+            "Global Battle #\\d in [^\n]*?!\n\n\\S+ \\S+ of \\S+ Castle\n\uD83C\uDFC5Level: [\\s\\S]+\nPosition: (-?\\d+)#(-?\\d+)\n(.+)\n[\\s\\S]*$"
     );
-
 
     private void reply(long chat, long message, String text) throws IOException, InterruptedException, TgApiException {
         this.request(
@@ -156,82 +155,6 @@ final class BotRunner implements Runnable {
                         JSONObject.quote(text)
                 )
         );
-    }
-
-    private static class UpdatesIterator implements Iterator<BotRunner.UpdateMessage>, Iterable<BotRunner.UpdateMessage> {
-        private final Iterator<Object> raw;
-        private BotRunner.UpdateMessage next = null;
-
-        public UpdatesIterator(JSONObject object) {
-            this.raw = object.getJSONArray("result").iterator();
-        }
-
-        @Override
-        public boolean hasNext() {
-            if (this.next != null) return true;
-            while (this.raw.hasNext()) {
-                Object rawUpd = this.raw.next();
-                if (!(rawUpd instanceof JSONObject))
-                    continue;
-                this.next = BotRunner.UpdateMessage.fromJson((JSONObject) rawUpd);
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public BotRunner.UpdateMessage next() {
-            if (!this.hasNext()) throw new IllegalStateException("All updates already returned");
-            final BotRunner.UpdateMessage next = this.next;
-            this.next = null;
-            return next;
-        }
-
-        @Override
-        public Iterator<BotRunner.UpdateMessage> iterator() {
-            return this;
-        }
-    }
-
-    private static class UpdateMessage {
-        public static UpdateMessage fromJson(JSONObject rawUpdate) {
-            final JSONObject message = rawUpdate.optJSONObject("message");
-            if (message == null) return null;
-            final JSONObject forwardFrom = message.optJSONObject("forward_from");
-            final JSONObject chat = message.optJSONObject("chat");
-            if (chat == null) return null;
-            return new UpdateMessage(
-                    rawUpdate.getLong("update_id"),
-                    message.getLong("message_id"),
-                    chat.getLong("id"),
-                    forwardFrom == null ? 0 : forwardFrom.getLong("id"),
-                    message.optString("text"),
-                    chat.getString("type").equals("private")
-            );
-        }
-
-        public final long updateId;
-        public final long messageId;
-        public final long chatId;
-        public final long forwardFromUId;
-        public final String rawText;
-        public final boolean verbose;
-
-        private UpdateMessage(
-                final long updateOffset,
-                final long messageId,
-                final long chatId,
-                final long forwardFromUId,
-                final String rawText,
-                final boolean verbose
-        ) {
-            this.updateId = updateOffset;
-            this.messageId = messageId;
-            this.chatId = chatId;
-            this.forwardFromUId = forwardFromUId;
-            this.rawText = rawText;
-            this.verbose = verbose;
-        }
     }
 
     private JSONObject request(String method, String data) throws IOException, InterruptedException, TgApiException {
@@ -246,16 +169,8 @@ final class BotRunner implements Runnable {
                 ).body()
         );
         if (!response.getBoolean("ok"))
-            throw new BotRunner.TgApiException(response.getString("description"));
+            throw new TgApiException(response.getString("description"));
         return response;
-
     }
-
-    public static class TgApiException extends Exception {
-        public TgApiException(String message) {
-            super(message);
-        }
-    }
-
 }
 
