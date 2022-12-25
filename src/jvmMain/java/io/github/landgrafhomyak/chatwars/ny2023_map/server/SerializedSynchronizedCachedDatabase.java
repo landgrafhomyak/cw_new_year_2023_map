@@ -22,7 +22,7 @@ final class SerializedSynchronizedCachedDatabase extends RectangleCacheDatabase 
     public SerializedSynchronizedCachedDatabase(Database uncached) throws DatabaseException {
         super(uncached);
         this.rect = uncached.getBorders();
-        this.cache = super.getMap(this.rect.minX, this.rect.minY, this.rect.maxX - this.rect.minX + 1, this.rect.maxY - this.rect.minY + 1);
+        this.cache = super.getMap(this.rect.minX, this.rect.minY, this.rect.width(), this.rect.height());
         this.serialize();
     }
 

@@ -52,6 +52,14 @@ public interface Database {
         public int absMaxY() {
             return this.maxY < 0 ? -this.maxY : this.maxY;
         }
+
+        public int width() {
+            return this.maxX - this.minX + 1;
+        }
+
+        public int height() {
+            return this.maxY - this.minY + 1;
+        }
     }
 
     Database.Rect getBorders() throws DatabaseException;
