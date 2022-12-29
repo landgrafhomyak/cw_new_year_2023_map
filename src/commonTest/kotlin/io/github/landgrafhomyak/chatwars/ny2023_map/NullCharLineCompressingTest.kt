@@ -21,11 +21,16 @@ internal class NullCharLineCompressingTest {
 
         val encoded = ByteArray(map.size)
         val compressedSize = NullCharLineCompressing.compress(map, encoded)
-        val decoded = NullCharLineCompressing.decompress(encoded
-            .slice(0 until compressedSize)
-            .joinToString(separator = "") { b -> Char(b.toInt()).toString() }
+
+        val decoded = Array<TileType?>(map.size) { null }
+        NullCharLineCompressing.decompress(
+            encoded
+                .slice(0 until compressedSize)
+                .joinToString(separator = "") { b -> Char(b.toInt()).toString() },
+            decoded
         )
-        assertEquals(map.toList(), decoded)
+
+        assertEquals(map.asList(), decoded.asList())
     }
 
     @Test

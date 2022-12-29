@@ -16,7 +16,8 @@ public fun main() {
     val south = xhr.getResponseHeader("South")!!.toInt()
     val west = xhr.getResponseHeader("West")!!.toInt()
     val sb = StringBuilder()
-    val data = NullCharLineCompressing.decompress(xhr.responseText)
+    val data = arrayOfNulls<TileType?>((north - south + 1) * (east - west + 1))
+    NullCharLineCompressing.decompress(xhr.responseText, data)
     val width = east - west + 1
     // data[width * -north + -west] = TileType.ZERO
 

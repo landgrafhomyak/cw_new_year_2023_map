@@ -13,70 +13,70 @@ import kotlin.jvm.JvmStatic
  * не имеет смысла, поэтому максимальную длину последовательности можно увеличить гарантируя что она содержит минимум
  * 3 символа. Полученный символ имеет код в диапазоне от 0 до 127, что удовлетворяет условиям ASCII и помещается в тип
  * `signed char`.
- * todo
  */
 public object NullCharLineCompressing {
     /**
      * Сериализация и сжатие. Обратная функция: [NullCharLineCompressing.decompress].
      *
-     * @see NullCharLineCompressing
      * @param from Карта.
      * @param to Буфер в который сохраняется сжатая карта, должен быть как минимум в два раза больше чем [from].
      * @return Длина сжатой карты.
+     * @see NullCharLineCompressing
      */
     @JvmStatic
     public fun compress(from: Array<TileType?>, to: ByteArray): Int {
-        var o = 0
-        var n = 0
-        var c: TileType?
-        global@ while (o < from.size) {
-            c = from[o++]
-            if (c != null) {
-                to[n++] = c.serial.code.toByte()
+        var fromIndex = 0
+        var toIndex = 0
+        var currentTile: TileType?
+        var sequenceLength:Int
+
+        global@ while (fromIndex < from.size) {
+            currentTile = from[fromIndex++]
+            if (currentTile != null) {
+                to[toIndex++] = currentTile.serial.code.toByte()
                 continue
             }
 
             @Suppress("LocalVariableName")
-            var L = 1
-            while (o < from.size && from[o] == null && L < 130) {
-                o++
-                L++
+            sequenceLength = 1
+            while (fromIndex < from.size && from[fromIndex] == null && sequenceLength < 130) {
+                fromIndex++
+                sequenceLength++
             }
-            if (L == 1) {
-                to[n++] = 0
+            if (sequenceLength == 1) {
+                to[toIndex++] = 0
                 continue
-            } else if (L == 2) {
-                to[n++] = 0
-                to[n++] = 0
+            } else if (sequenceLength == 2) {
+                to[toIndex++] = 0
+                to[toIndex++] = 0
                 continue
             }
-            to[n++] = '@'.code.toByte()
-            to[n++] = (L - 3).toByte()
+            to[toIndex++] = '@'.code.toByte()
+            to[toIndex++] = (sequenceLength - 3).toByte()
         }
-        return n
+        return toIndex
     }
 
     /**
      * Разжатие и десериализация. Обратная функция: [NullCharLineCompressing.compress].
      *
-     * @see NullCharLineCompressing
      * @param from Содержимое `xhr.responseText` с данными карты.
-     * @return Карта в одномерном списке.
+     * @param to Одномерный массив размера которого должно хватать для представления карты в несжатом виде
+     * @see NullCharLineCompressing
      */
     @JvmStatic
-    public fun decompress(from: String): List<TileType?> {
-        val buffer = ArrayList<TileType?>()
-        var o = 0
-        var c: Char
-        while (o < from.length) {
-            c = from[o++]
-            if (c == '@') {
-                for (unusedVar in 0 until (from[o++].code + 3))
-                    buffer.add(null)
+    public fun decompress(from: String, to: Array<TileType?>) {
+        var fromIndex = 0
+        var toIndex = 0
+        var currentChar: Char
+        while (fromIndex < from.length) {
+            currentChar = from[fromIndex++]
+            if (currentChar == '@') {
+                for (sequenceIndex in 0 until (from[fromIndex++].code + 3))
+                    to[toIndex++] = null
             } else {
-                buffer.add(TileType.fromSerial(c))
+                to[toIndex++] = TileType.fromSerial(currentChar)
             }
         }
-        return buffer
     }
 }
