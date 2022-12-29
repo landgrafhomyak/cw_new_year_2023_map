@@ -16,7 +16,7 @@ public fun main() {
     val south = xhr.getResponseHeader("South")!!.toInt()
     val west = xhr.getResponseHeader("West")!!.toInt()
     val sb = StringBuilder()
-    val data = (xhr.response as String).map { b -> TileType.fromSerial(b) }
+    val data = NullCharLineCompressing.decompress(xhr.responseText)
     val width = east - west + 1
     // data[width * -north + -west] = TileType.ZERO
 

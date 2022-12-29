@@ -74,12 +74,12 @@ kotlin {
                 implementation("org.json:json:20220924")
             }
         }
-        val commonTest by getting
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
         val jvmMain by getting {
-//            java.sourceSets.getByName("main").java.apply {
-//                srcDirs.forEach { d -> kotlin.srcDir(d)}
-//                setSrcDirs(emptyList<Any>());
-//            }
             dependsOn(commonMain)
         }
         val jsMain by getting {

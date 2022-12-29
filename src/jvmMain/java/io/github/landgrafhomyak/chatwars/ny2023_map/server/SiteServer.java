@@ -62,7 +62,7 @@ public final class SiteServer {
 
     @SuppressWarnings("FieldCanBeLocal")
     private final HttpServer server;
-    private final SerializedSynchronizedCachedDatabase db;
+    private final SerializedSynchronizedCompressedCachedDatabase db;
 
     public SiteServer(final Database db) throws IOException, DatabaseException {
         this.server = HttpServer.create(new InetSocketAddress(80), 0);
@@ -70,7 +70,7 @@ public final class SiteServer {
         this.server.createContext(INDEX_CSS_HANDLER.path, INDEX_CSS_HANDLER);
         this.server.createContext("/icons/", ICONS_HANDLER);
         final String apiPath = "/data";
-        this.db = new SerializedSynchronizedCachedDatabase(db);
+        this.db = new SerializedSynchronizedCompressedCachedDatabase(db);
         this.server.createContext(apiPath, new DataHandler(apiPath, this.db));
         this.server.start();
         this.server.createContext(INDEX_HTML_HANDLER.path, INDEX_HTML_HANDLER);

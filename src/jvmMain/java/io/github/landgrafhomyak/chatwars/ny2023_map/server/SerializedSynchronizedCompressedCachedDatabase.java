@@ -1,5 +1,6 @@
 package io.github.landgrafhomyak.chatwars.ny2023_map.server;
 
+import io.github.landgrafhomyak.chatwars.ny2023_map.NullCharLineCompressing;
 import io.github.landgrafhomyak.chatwars.ny2023_map.TileType;
 import io.github.landgrafhomyak.chatwars.ny2023_map.db.Database;
 import io.github.landgrafhomyak.chatwars.ny2023_map.db.DatabaseException;
@@ -13,7 +14,7 @@ import static java.util.Arrays.copyOf;
 /**
  * Модификация кеша под нужды {@link SiteServer HTTP сервера}. Добавлена сериализация и синхронизация.
  */
-final class SerializedSynchronizedCachedDatabase extends RectangleCacheDatabase {
+final class SerializedSynchronizedCompressedCachedDatabase extends RectangleCacheDatabase {
     /**
      * Кеш сериализованого представления {@link #cache}.
      * Так как доступ к сайту происходит чаще чем изменение кеша карты, имеет смысл кешировать и её сериализованную
@@ -21,10 +22,11 @@ final class SerializedSynchronizedCachedDatabase extends RectangleCacheDatabase 
      *
      * @see TileType#serial
      */
-    private byte[] serialized = new byte[]{(byte) (TileType.ZERO.serial)};
+    byte[] serialized = new byte[]{(byte) (TileType.ZERO.serial)};
+    int serializedSize = 1;
 
 
-    public SerializedSynchronizedCachedDatabase(Database uncached) throws DatabaseException {
+    public SerializedSynchronizedCompressedCachedDatabase(Database uncached) throws DatabaseException {
         super(uncached);
         this.rect = uncached.getBorders();
         this.cache = super.getMap(this.rect.minX, this.rect.minY, this.rect.width(), this.rect.height());
@@ -36,12 +38,9 @@ final class SerializedSynchronizedCachedDatabase extends RectangleCacheDatabase 
      * {@link TileType#serial Сериализует} {@link #cache} и сохраняет в {@link #serialized}.
      */
     private void serialize() {
-        if (this.serialized.length != this.cache.length)
-            this.serialized = copyOf(this.serialized, this.cache.length);
-        int i = 0;
-        for (final TileType type : this.cache) {
-            this.serialized[i++] = (byte) (TileType.serial(type));
-        }
+        if (this.serialized.length < this.cache.length * 2)
+            this.serialized = copyOf(this.serialized, this.cache.length * 2);
+        this.serializedSize = NullCharLineCompressing.compress(this.cache, this.serialized);
     }
 
     /**
@@ -52,15 +51,6 @@ final class SerializedSynchronizedCachedDatabase extends RectangleCacheDatabase 
     @SuppressWarnings("unused")
     public synchronized void export(final OutputStream os) throws IOException {
         os.write(this.serialized);
-    }
-
-    /**
-     * Возвращает {@link #serialized сериализованный внутренний кеш}.
-     * На время его использования должна быть произведена синхронизация на этом объекте базы данных.
-     * Изменение кеша недопустимо.
-     */
-    public byte[] serialized() {
-        return this.serialized;
     }
 
 

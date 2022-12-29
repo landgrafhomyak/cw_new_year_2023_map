@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  * Обработчик запросов к API методу получения карты.
  *
- * @see SerializedSynchronizedCachedDatabase
+ * @see SerializedSynchronizedCompressedCachedDatabase
  */
 final class DataHandler implements HttpHandler {
     /**
@@ -23,9 +23,9 @@ final class DataHandler implements HttpHandler {
     /**
      * База данных.
      */
-    private final SerializedSynchronizedCachedDatabase db;
+    private final SerializedSynchronizedCompressedCachedDatabase db;
 
-    DataHandler(String path, SerializedSynchronizedCachedDatabase db) {
+    DataHandler(String path, SerializedSynchronizedCompressedCachedDatabase db) {
         this.path = path;
         this.db = db;
     }
@@ -44,10 +44,11 @@ final class DataHandler implements HttpHandler {
         headers.add("East", Integer.toString(rect.maxX));
         headers.add("South", Integer.toString(rect.minY));
         headers.add("West", Integer.toString(rect.minX));
-        final byte[] serialized = this.db.serialized();
-        exchange.sendResponseHeaders(200, serialized.length);
-        try (final OutputStream os = exchange.getResponseBody()) {
-            os.write(serialized);
+        synchronized (this.db) {
+            exchange.sendResponseHeaders(200, this.db.serializedSize);
+            try (final OutputStream os = exchange.getResponseBody()) {
+                os.write(this.db.serialized, 0, this.db.serializedSize);
+            }
         }
         exchange.close();
     }
