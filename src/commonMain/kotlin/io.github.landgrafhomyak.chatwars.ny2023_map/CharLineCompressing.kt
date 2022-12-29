@@ -1,10 +1,30 @@
+@file:Suppress("UNREACHABLE_CODE", "unused", "UNUSED_PARAMETER")
+
 package io.github.landgrafhomyak.chatwars.ny2023_map
 
 import kotlin.jvm.JvmStatic
 
+/**
+ * Сериализация и сжатие карты представленной в виде одномерного массива.
+ *
+ * В результате некоторого времени выяснилось что некоторые игроки уходят далеко от центра,
+ * поэтому появляется очень много пустого места, которое кодируется длинной последовательностью их одинаковых символов.
+ *
+ * todo
+ */
+@Deprecated("Not implemented", level = DeprecationLevel.ERROR)
 public object CharLineCompressing {
+    /**
+     * Сериализация и сжатие. Обратная функция: [CharLineCompressing.decompress].
+     *
+     * @see CharLineCompressing
+     * @param from Карта.
+     * @param to Буфер в который сохраняется сжатая карта, должен быть как минимум в два раза больше чем [from].
+     * @return Длина сжатой карты.
+     */
     @JvmStatic
     public fun compress(from: Array<TileType?>, to: ByteArray): Int {
+        TODO()
         var o = 0
         var n = 0
         var c: TileType?
@@ -25,8 +45,16 @@ public object CharLineCompressing {
         return n
     }
 
+    /**
+     * Разжатие и десериализация. Обратная функция: [CharLineCompressing.compress].
+     *
+     * @see CharLineCompressing
+     * @param from Содержимое `xhr.responseText` с данными карты.
+     * @return Карта в одномерном списке.
+     */
     @JvmStatic
     public fun decompress(from: String): List<TileType?> {
+        TODO()
         val buffer = ArrayList<TileType?>()
         var o = 0
         var c: Char

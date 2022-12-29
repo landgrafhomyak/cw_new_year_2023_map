@@ -1,5 +1,7 @@
 package io.github.landgrafhomyak.chatwars.ny2023_map;
 
+@SuppressWarnings("unused")
+@Deprecated
 public /* sealed */ class Building {
     public final Castle ownerCastle;
     public final String owner;

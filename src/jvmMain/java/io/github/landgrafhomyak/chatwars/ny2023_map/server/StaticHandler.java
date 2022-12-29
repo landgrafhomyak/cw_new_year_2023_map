@@ -7,9 +7,21 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
 
+/**
+ * Обработчик HTTP запросов к одному статическому ресурсу.
+ */
 final class StaticHandler implements HttpHandler {
+    /**
+     * Путь к ресурсу.
+     */
     public final String path;
+    /**
+     * Содержимое ресурса.
+     */
     private final byte[] content;
+    /**
+     * MIME-type ресурса.
+     */
     private final String contentType;
 
     StaticHandler(final String path, final byte[] content, final String contentType) {

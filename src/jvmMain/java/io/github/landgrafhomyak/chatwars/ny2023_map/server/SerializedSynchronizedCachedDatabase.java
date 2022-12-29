@@ -10,9 +10,14 @@ import java.io.OutputStream;
 
 import static java.util.Arrays.copyOf;
 
+/**
+ * Модификация кеша под нужды {@link SiteServer HTTP сервера}. Добавлена сериализация и синхронизация.
+ */
 final class SerializedSynchronizedCachedDatabase extends RectangleCacheDatabase {
     /**
-     * Кешированное байтовое представление {@link #cache}.
+     * Кеш сериализованого представления {@link #cache}.
+     * Так как доступ к сайту происходит чаще чем изменение кеша карты, имеет смысл кешировать и её сериализованную
+     * версию вместо генерации на каждом обращении.
      *
      * @see TileType#serial
      */
@@ -27,6 +32,9 @@ final class SerializedSynchronizedCachedDatabase extends RectangleCacheDatabase 
     }
 
 
+    /**
+     * {@link TileType#serial Сериализует} {@link #cache} и сохраняет в {@link #serialized}.
+     */
     private void serialize() {
         if (this.serialized.length != this.cache.length)
             this.serialized = copyOf(this.serialized, this.cache.length);

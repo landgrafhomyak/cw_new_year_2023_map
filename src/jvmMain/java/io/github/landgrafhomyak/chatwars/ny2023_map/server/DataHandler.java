@@ -4,14 +4,25 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import io.github.landgrafhomyak.chatwars.ny2023_map.db.Database;
-import io.github.landgrafhomyak.chatwars.ny2023_map.db.SquareCacheDatabase;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
 
+/**
+ * Обработчик запросов к API методу получения карты.
+ *
+ * @see SerializedSynchronizedCachedDatabase
+ */
 final class DataHandler implements HttpHandler {
+    /**
+     * Путь к методу.
+     */
     public final String path;
+
+    /**
+     * База данных.
+     */
     private final SerializedSynchronizedCachedDatabase db;
 
     DataHandler(String path, SerializedSynchronizedCachedDatabase db) {

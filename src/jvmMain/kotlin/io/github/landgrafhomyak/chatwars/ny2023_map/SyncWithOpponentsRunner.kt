@@ -10,16 +10,33 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
+/**
+ * Главная функция для потока синхронизации карты с конкурентами. Скачивает чужие карты раз в час.
+ */
 internal class SyncWithOpponentsRunner(db: Database) : Runnable {
+    /**
+     * Кеш для объединения чужих карт перед сохранением и предотвращения выделения новых объектов при каждом запросе.
+     */
     private class Cache(private val uncached: Database) : RectangleCacheDatabase(NullDatabase.INSTANCE) {
         fun commit() {
             this.uncached.saveMap(this.cache, this.rect.minX, this.rect.minY, this.rect.width(), this.rect.height())
         }
     }
 
+    /**
+     * HTTP клиент для выполнения запросов.
+     */
     private val client = HttpClient.newHttpClient()
+
+    /**
+     * Локальный кеш карты.
+     * @see SyncWithOpponentsRunner.Cache
+     */
     private val db = Cache(db)
 
+    /**
+     * Занимает поток, отправляя запросы к конкурентам раз в час.
+     */
     override fun run() {
         while (true) {
             try {
@@ -32,6 +49,10 @@ internal class SyncWithOpponentsRunner(db: Database) : Runnable {
         }
     }
 
+    /**
+     * Функция-обёртка для подавления ошибок и вывода их в [System.out].
+     * Используется для того чтобы ошибка при запросе к одному конкуренту не отменяла запросов к остальным.
+     */
     private inline fun supressErrors(block: () -> Unit) {
         try {
             block()

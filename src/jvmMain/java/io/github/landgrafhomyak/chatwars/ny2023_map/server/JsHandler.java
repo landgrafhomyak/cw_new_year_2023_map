@@ -7,10 +7,26 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
 
+/**
+ * Обработчик HTTP запросов к статическому JavaScript ресурсу и соответствующему ему
+ * <a href="https://habr.com/ru/post/148098/">файлу дешифровки</a> (.js.map).
+ */
 final class JsHandler implements HttpHandler {
+    /**
+     * Путь к JavaScript ресурсу.
+     */
     public final String path;
+    /**
+     * Путь к файлу дешифровки.
+     */
     private final String mapPath;
+    /**
+     * Содержимое скрипта.
+     */
     private final byte[] script;
+    /**
+     * Содержимое файла дешифровки
+     */
     private final byte[] map;
 
     JsHandler(final String path, final byte[] script, final byte[] map) {

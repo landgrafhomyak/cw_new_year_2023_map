@@ -1,5 +1,7 @@
 package io.github.landgrafhomyak.chatwars.ny2023_map;
 
+@SuppressWarnings("unused")
+@Deprecated
 public enum Castle {
     BLUE("\uD83C\uDDEA\uD83C\uDDFA"),
     BLACK("\uD83C\uDDEC\uD83C\uDDF5"),

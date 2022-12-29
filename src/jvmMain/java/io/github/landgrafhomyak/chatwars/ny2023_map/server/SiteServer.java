@@ -3,7 +3,6 @@ package io.github.landgrafhomyak.chatwars.ny2023_map.server;
 import com.sun.net.httpserver.HttpServer;
 import io.github.landgrafhomyak.chatwars.ny2023_map.db.Database;
 import io.github.landgrafhomyak.chatwars.ny2023_map.db.DatabaseException;
-import io.github.landgrafhomyak.chatwars.ny2023_map.db.SquareCacheDatabase;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,15 +34,21 @@ public final class SiteServer {
         }
     }
 
-    private static final byte[] LOADER_JS = loadResource("/loader.js");
-    private static final byte[] LOADER_JS_MAP = loadResource("/loader.js.map");
-    private static final byte[] INDEX_CSS = loadResource("/index.css");
-    private static final byte[] INDEX_HTML = loadResource("/index.html");
-
-
-    private static final JsHandler LOADER_JS_HANDLER = new JsHandler("/loader.js", LOADER_JS, LOADER_JS_MAP);
-    private static final StaticHandler INDEX_CSS_HANDLER = new StaticHandler("/index.css", INDEX_CSS, "text/css");
-    private static final StaticHandler INDEX_HTML_HANDLER = new StaticHandler("/", INDEX_HTML, "text/html");
+    private static final JsHandler LOADER_JS_HANDLER = new JsHandler(
+            "/loader.js",
+            loadResource("/loader.js"),
+            loadResource("/loader.js.map")
+    );
+    private static final StaticHandler INDEX_CSS_HANDLER = new StaticHandler(
+            "/index.css",
+            loadResource("/index.css"),
+            "text/css"
+    );
+    private static final StaticHandler INDEX_HTML_HANDLER = new StaticHandler(
+            "/",
+            loadResource("/index.html"),
+            "text/html"
+    );
     private static final AssetsHandler ICONS_HANDLER = new AssetsHandler("image/svg+xml",
             Map.of(
                     "/icons/fields.svg", loadResource("/icons/fields.svg"),
@@ -71,6 +76,9 @@ public final class SiteServer {
         this.server.createContext(INDEX_HTML_HANDLER.path, INDEX_HTML_HANDLER);
     }
 
+    /**
+     * База данных с синхронизацией и кешированием, через которую должна сохранятся карта для отображения на сайте.
+     */
     public Database database() {
         return this.db;
     }

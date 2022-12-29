@@ -7,6 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * База данных на основе <a href="https://ru.wikipedia.org/wiki/SQLite">SQLite</a>.
+ * Не поддерживает многопоточность.
+ */
 public final class SqliteDatabase implements Database {
     private final SQLiteConnection connection;
 
@@ -15,6 +19,9 @@ public final class SqliteDatabase implements Database {
         this.initDb();
     }
 
+    /**
+     * Инициализирует базу данных, создавая необходимые таблицы.
+     */
     private void initDb() throws SQLException {
         try (PreparedStatement stmt = this.connection.prepareStatement(
                 "CREATE TABLE IF NOT EXISTS map(x INTEGER NOT NULL, y INTEGER NOT NULL, type INTEGER NOT NULL, UNIQUE (x, y), PRIMARY KEY (x, y))"
